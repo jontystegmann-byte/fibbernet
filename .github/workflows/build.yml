@@ -1,4 +1,4 @@
-name: Test and package Linewatch
+name: Test and package Fibbernet
 on:
   push:
     branches: [main]
@@ -33,7 +33,7 @@ jobs:
         run: bash scripts/build-macos.sh
       - uses: actions/upload-artifact@v4
         with:
-          name: Linewatch-${{ runner.arch }}
+          name: Fibbernet-${{ runner.arch }}
           path: dist/*.zip
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: Linewatch-*
+          pattern: Fibbernet-*
           merge-multiple: true
           path: packages
       - name: Attach native apps to draft release
@@ -53,5 +53,5 @@ jobs:
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --draft --title "Linewatch $RELEASE_TAG" --notes "Native Intel and Apple Silicon Mac apps. macOS 14 or later."
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --draft --title "Fibbernet $RELEASE_TAG" --notes "Native Intel and Apple Silicon Mac apps. macOS 14 or later."
           gh release upload "$RELEASE_TAG" packages/*.zip --clobber

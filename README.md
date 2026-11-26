@@ -1,4 +1,4 @@
-# Linewatch
+# Fibbernet
 
 **Your connection. On record.** A Mac app that measures broadband speed, keeps the evidence and helps you ask your supplier to fix it.
 
@@ -6,7 +6,7 @@ Styled to match the invoice and Blik Plan design system: Inter, JetBrains Mono, 
 
 ## Install
 
-Download the app for your Mac from [Releases](https://github.com/jontystegmann-byte/broadband-monitor/releases), unzip it and move **Linewatch.app** to Applications before enabling its schedule. The app includes its Python runtime; no separate Python installation is needed. The app is ad-hoc signed, not Apple notarized. macOS may require you to approve it in System Settings → Privacy & Security before its first launch.
+Download the app for your Mac from [Releases](https://github.com/jontystegmann-byte/fibbernet/releases), unzip it and move **Fibbernet.app** to Applications before enabling its schedule. The app includes its Python runtime; no separate Python installation is needed. The app is ad-hoc signed, not Apple notarized. macOS may require you to approve it in System Settings → Privacy & Security before its first launch.
 
 Requires macOS 14 or later. `x86_64` downloads are for Intel Macs; `arm64` downloads are for Apple Silicon. Builds are architecture-specific.
 
@@ -18,15 +18,15 @@ Requires macOS 14 or later. `x86_64` downloads are for Intel Macs; `arm64` downl
 4. Open the printable report to print or save a PDF. **Open CSV exports** shows timestamped spreadsheet exports in Finder.
 5. Use **Email & complaints** to add your name, your email, sender email and provider support email. Edit the subject and complaint, then open a populated draft in your email app. Opening a draft does not send it. Attach a report in your email app if needed.
 
-The Mac must be awake and logged in to take measurements, including at 03:00. Closing Linewatch leaves scheduled tests enabled. The app does not wake the Mac or keep it awake. Missed tests may coalesce on waking; gaps do not prove an internet outage.
+The Mac must be awake and logged in to take measurements, including at 03:00. Closing Fibbernet leaves scheduled tests enabled. The app does not wake the Mac or keep it awake. Missed tests may coalesce on waking; gaps do not prove an internet outage.
 
 ## Menu bar and background monitoring
 
-Linewatch lives in the Mac menu bar as a four-bar speed icon. Close the dashboard with its red close button to leave the menu bar app running. Click the menu bar icon to reopen the dashboard, check the download average, run a speed test, open the latest report, or pause/resume scheduled tests. The Dock icon hides while the dashboard is closed and returns when you reopen it.
+Fibbernet lives in the Mac menu bar as a long-nosed speech-bubble icon. Close the dashboard with its red close button to leave the menu bar app running. Click the menu bar icon to reopen the dashboard, check the download average, run a speed test, open the latest report, or pause/resume scheduled tests. The Dock icon hides while the dashboard is closed and returns when you reopen it.
 
-**Start at Login** is an optional menu toggle using macOS Login Items. macOS may require approval in System Settings; **Login Item Settings…** opens that panel. When launched as a login item, Linewatch starts in the menu bar without opening the dashboard. Start at Login is not enabled automatically.
+**Start at Login** is an optional menu toggle using macOS Login Items. macOS may require approval in System Settings; **Login Item Settings…** opens that panel. When launched as a login item, Fibbernet starts in the menu bar without opening the dashboard. Start at Login is not enabled automatically.
 
-**Quit Linewatch** removes the menu bar icon and closes the local UI service. The independent scheduled tests keep running. Use **Pause Scheduled Tests** if you want monitoring to stop. Both the menu bar and scheduler require this user to be logged in; measurements also require the Mac to be awake. Closing the app does not allow testing during sleep or while the Mac is powered off.
+**Quit Fibbernet** removes the menu bar icon and closes the local UI service. The independent scheduled tests keep running. Use **Pause Scheduled Tests** if you want monitoring to stop. Both the menu bar and scheduler require this user to be logged in; measurements also require the Mac to be awake. Closing the app does not allow testing during sleep or while the Mac is powered off.
 
 ## Automatic email
 
@@ -40,7 +40,7 @@ Template fields: `{provider}`, `{account_reference}`, `{customer_name}`, `{user_
 
 ## Measurement method
 
-Linewatch uses Apple's built-in `networkQuality -c -s` to measure download and upload sequentially. It records throughput, idle latency, interface, timestamp, conditions, failures and the original output. Averages are arithmetic means of successful samples; failed attempts are never converted to zero speed. Dashboard times are local; report times are UTC. The dashboard shows up to 2,000 recent measurements, a chart of up to 100 successful tests and a table of the last 50 attempts; reports include every attempt in the selected report window, and the database retains the complete history.
+Fibbernet uses Apple's built-in `networkQuality -c -s` to measure download and upload sequentially. It records throughput, idle latency, interface, timestamp, conditions, failures and the original output. Averages are arithmetic means of successful samples; failed attempts are never converted to zero speed. Dashboard times are local; report times are UTC. The dashboard shows up to 2,000 recent measurements, a chart of up to 100 successful tests and a table of the last 50 attempts; reports include every attempt in the selected report window, and the database retains the complete history.
 
 Speeds are **Mbps**, not MB/s: 1 Gbps = 1,000 Mbps; 700 Mbps = 87.5 MB/s. Connect the Mac by Ethernet to a gigabit-capable router port for stronger supplier evidence. Wi-Fi, VPNs, other users, adapter limits and the test server can affect results. A speed test alone does not identify the cause or establish a contractual breach. Tests can transfer gigabytes and temporarily use available bandwidth.
 
@@ -78,8 +78,8 @@ python3 -m venv .build-venv
 bash scripts/build-macos.sh
 ```
 
-The build produces `dist/Linewatch.app` and an architecture-labelled ZIP. The script builds the Swift/AppKit window and WebKit UI, bundles the Python engine, includes font/runtime notices and verifies its ad-hoc signature. The GitHub Actions workflow tests and builds both Intel and Apple Silicon packages; version tags attach packages to a draft release.
+The build produces `dist/Fibbernet.app` and an architecture-labelled ZIP. The script builds the Swift/AppKit window and WebKit UI, bundles the Python engine, includes font/runtime notices and verifies its ad-hoc signature. The GitHub Actions workflow tests and builds both Intel and Apple Silicon packages; version tags attach packages to a draft release.
 
-For the original standalone monitor commands, copy `config.example.json` to `config.json` and see [CLI instructions](docs/CLI.md). To import a previous `~/internet-monitor` setup into a fresh Linewatch profile, run `python3 scripts/migrate-legacy.py`, then enable the schedule from the installed app. The import retains the originals and refuses to overwrite an existing Linewatch database.
+For the original standalone monitor commands, copy `config.example.json` to `config.json` and see [CLI instructions](docs/CLI.md). To import a previous `~/internet-monitor` setup into a fresh Fibbernet profile, run `python3 scripts/migrate-legacy.py`, then enable the schedule from the installed app. The import retains the originals and refuses to overwrite an existing Fibbernet database.
 
 See [third-party notices](THIRD_PARTY_NOTICES.md) for bundled font and runtime licences.

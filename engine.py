@@ -1,4 +1,4 @@
-"""Linewatch's loopback-only app service and packaged monitor entry point."""
+"""Fibbernet's loopback-only app service and packaged monitor entry point."""
 import argparse
 from contextlib import contextmanager
 import copy
@@ -72,7 +72,7 @@ def state():
             'sample_count': sum(r['status'] == 'ok' for r in recent),
             'draft': mail_templates.draft(c, recent), 'busy': running(),
             'schedule_enabled': schedule_enabled(), 'last_email_utc': last_sent[0] if last_sent else None,
-            'data_directory': str(m.ROOT), 'version': '1.1.0'}
+            'data_directory': str(m.ROOT), 'version': '1.2.0'}
 
 
 def save_settings(payload):
@@ -136,7 +136,7 @@ class Handler(BaseHTTPRequestHandler):
         if path.path == '/' and token and secrets.compare_digest(token, self.server.token):
             return self.reply(303, '', headers={'Location': '/', 'Set-Cookie': f'linewatch={self.server.token}; HttpOnly; SameSite=Strict; Path=/'})
         if not self.authorised():
-            return self.reply(403, {'error': 'Open Linewatch from the app to start a session'})
+            return self.reply(403, {'error': 'Open Fibbernet from the app to start a session'})
         try:
             if path.path == '/api/state':
                 return self.reply(200, state())
@@ -151,7 +151,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(500, {'error': 'Could not load app data. Check your local configuration and logs.'})
 
     def do_POST(self):
-        if not self.authorised() or self.headers.get('X-Linewatch') != '1' or self.headers.get('Origin', f'http://{self.server.host}') != f'http://{self.server.host}':
+        if not self.authorised() or self.headers.get('X-Fibbernet') != '1' or self.headers.get('Origin', f'http://{self.server.host}') != f'http://{self.server.host}':
             return self.reply(403, {'error': 'Invalid app session'})
         try:
             size = int(self.headers.get('Content-Length', '0'))

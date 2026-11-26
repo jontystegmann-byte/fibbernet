@@ -2,15 +2,15 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 BUILD_PYTHON="${BUILD_PYTHON:-.build-venv/bin/python}"
-"$BUILD_PYTHON" -m PyInstaller --noconfirm --clean --onedir --name linewatch-engine \
+"$BUILD_PYTHON" -m PyInstaller --noconfirm --clean --onedir --name fibbernet-engine \
   --add-data "$(pwd)/assets:assets" --add-data "$(pwd)/config.example.json:." \
   --distpath build/engine --workpath build/pyinstaller --specpath build engine.py
-APP="dist/Linewatch.app"
+APP="dist/Fibbernet.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-swiftc -O -target "$(uname -m)-apple-macosx14.0" -framework AppKit -framework WebKit -framework ServiceManagement -framework Carbon macos/Linewatch.swift -o "$APP/Contents/MacOS/Linewatch"
+swiftc -O -target "$(uname -m)-apple-macosx14.0" -framework AppKit -framework WebKit -framework ServiceManagement -framework Carbon macos/FibberMark.swift macos/Fibbernet.swift -o "$APP/Contents/MacOS/Fibbernet"
 cp macos/Info.plist "$APP/Contents/Info.plist"
 rm -rf "$APP/Contents/Resources/engine"
-cp -R build/engine/linewatch-engine "$APP/Contents/Resources/engine"
+cp -R build/engine/fibbernet-engine "$APP/Contents/Resources/engine"
 mkdir -p "$APP/Contents/Resources/Notices"
 cp THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/Notices/"
 "$BUILD_PYTHON" - "$APP/Contents/Resources/Notices" <<'PY'
@@ -42,5 +42,5 @@ iconutil -c icns build/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 codesign --force --deep --sign - "$APP"
 codesign --verify --deep --strict "$APP"
 ARCH="$(uname -m)"
-ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Linewatch-1.1.0-${ARCH}.zip"
-echo "Built $APP and dist/Linewatch-1.1.0-${ARCH}.zip"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Fibbernet-1.2.0-${ARCH}.zip"
+echo "Built $APP and dist/Fibbernet-1.2.0-${ARCH}.zip"

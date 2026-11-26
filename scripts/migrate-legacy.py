@@ -1,4 +1,4 @@
-"""Copy an existing CLI monitor into Linewatch; leave the original as a backup."""
+"""Copy an existing CLI monitor into Fibbernet; leave the original as a backup."""
 import fcntl
 import json
 import os
@@ -14,7 +14,7 @@ example = Path(__file__).resolve().parents[1] / 'config.example.json'
 if not (source / 'data/measurements.sqlite3').exists():
     raise SystemExit('No legacy monitor database found; nothing to import.')
 if (target / 'data/measurements.sqlite3').exists():
-    raise SystemExit('Linewatch already has a database. No files were overwritten.')
+    raise SystemExit('Fibbernet already has a database. No files were overwritten.')
 with (source / '.monitor.lock').open('a') as lock:
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     target.mkdir(parents=True, exist_ok=True, mode=0o700)

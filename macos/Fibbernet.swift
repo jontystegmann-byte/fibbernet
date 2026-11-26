@@ -31,9 +31,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         let appMenuItem = NSMenuItem()
         menu.addItem(appMenuItem)
         let appMenu = NSMenu()
-        appMenu.addItem(withTitle: "About Linewatch", action: #selector(about), keyEquivalent: "")
+        appMenu.addItem(withTitle: "About Fibbernet", action: #selector(about), keyEquivalent: "")
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Quit Linewatch", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: "Quit Fibbernet", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         appMenuItem.submenu = appMenu
         let editItem = NSMenuItem()
         menu.addItem(editItem)
@@ -48,7 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         configureMenuBar()
 
         window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1260, height: 850), styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-        window.title = "Linewatch — Broadband Monitor"
+        window.title = "Fibbernet — Broadband Monitor"
         window.minSize = NSSize(width: 820, height: 620)
         window.center()
         window.isReleasedWhenClosed = false
@@ -69,7 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
     func startService() {
         guard let resources = Bundle.main.resourceURL else { return fail("The app resources are missing.") }
         let process = Process()
-        process.executableURL = resources.appendingPathComponent("engine/linewatch-engine")
+        process.executableURL = resources.appendingPathComponent("engine/fibbernet-engine")
         process.arguments = ["serve"]
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -101,7 +101,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         process.terminationHandler = { [weak self] _ in
             DispatchQueue.main.async {
                 guard let self = self, !self.terminating else { return }
-                self.fail("The local monitor service stopped. Reopen Linewatch. Your measurements are retained in Application Support/Linewatch.")
+                self.fail("The local monitor service stopped. Reopen Fibbernet. Your measurements are retained in Application Support/Linewatch.")
             }
         }
         service = process
@@ -112,15 +112,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         let image = NSImage(size: NSSize(width: 18, height: 18), flipped: false) { _ in
             NSColor.black.setFill()
-            for (x, height) in [(1, 4), (5, 7), (9, 10), (13, 14)] {
-                NSBezierPath(roundedRect: NSRect(x: x, y: 2, width: 3, height: height), xRadius: 0.7, yRadius: 0.7).fill()
-            }
+            FibberMark.path(in: NSRect(x: 0, y: 0, width: 18, height: 18)).fill()
             return true
         }
         image.isTemplate = true
         statusItem.button?.image = image
-        statusItem.button?.setAccessibilityLabel("Linewatch broadband monitor")
-        statusItem.button?.toolTip = "Linewatch — Broadband Monitor"
+        statusItem.button?.setAccessibilityLabel("Fibbernet broadband monitor")
+        statusItem.button?.toolTip = "Fibbernet — Broadband Monitor"
         statusMenu = NSMenu()
         statusMenu.autoenablesItems = false
         statusMenu.delegate = self
@@ -142,7 +140,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         let note = NSMenuItem(title: "Schedules run independently of this app", action: nil, keyEquivalent: "")
         note.isEnabled = false
         statusMenu.addItem(note)
-        addItem("Quit Linewatch", #selector(NSApplication.terminate(_:)), "q").target = NSApp
+        addItem("Quit Fibbernet", #selector(NSApplication.terminate(_:)), "q").target = NSApp
         statusItem.menu = statusMenu
         runItem.isEnabled = false
         reportItem.isEnabled = false
@@ -180,7 +178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         if let payload = payload {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.setValue("1", forHTTPHeaderField: "X-Linewatch")
+            request.setValue("1", forHTTPHeaderField: "X-Fibbernet")
             request.setValue(base.absoluteString.trimmingCharacters(in: CharacterSet(charactersIn: "/")), forHTTPHeaderField: "Origin")
             request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
         }
@@ -189,8 +187,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
             if let error = error { result = .failure(error) }
             else if let data = data, let body = try? JSONSerialization.jsonObject(with: data) as? [String: Any], let response = response as? HTTPURLResponse {
                 if response.statusCode == 200 { result = .success(body) }
-                else { result = .failure(NSError(domain: "Linewatch", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: body["error"] as? String ?? "The request failed."])) }
-            } else { result = .failure(NSError(domain: "Linewatch", code: 1, userInfo: [NSLocalizedDescriptionKey: "The monitor did not return a valid response."])) }
+                else { result = .failure(NSError(domain: "Fibbernet", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: body["error"] as? String ?? "The request failed."])) }
+            } else { result = .failure(NSError(domain: "Fibbernet", code: 1, userInfo: [NSLocalizedDescriptionKey: "The monitor did not return a valid response."])) }
             DispatchQueue.main.async { completion(result) }
         }.resume()
     }
@@ -214,7 +212,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
                 self.pauseItem.isEnabled = !busy && !self.commandInFlight
                 self.statusItem.button?.toolTip = self.monitorStateItem.title + "\n" + self.speedItem.title
             case .failure:
-                self.monitorStateItem.title = "Monitor unavailable — reopen Linewatch"
+                self.monitorStateItem.title = "Monitor unavailable — reopen Fibbernet"
                 self.runItem.isEnabled = false; self.reportItem.isEnabled = false; self.pauseItem.isEnabled = false
             }
         }
@@ -272,14 +270,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
         }
     }
 
-    func fail(_ message: String) { if smokeTest { fputs(message + "\n", stderr); service?.terminate(); exit(1) }; let alert = NSAlert(); alert.messageText = "Linewatch"; alert.informativeText = message; alert.runModal() }
-    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Linewatch", .applicationVersion: "1.1.0", .credits: NSAttributedString(string: "Broadband monitoring, on record.\nInter and JetBrains Mono fonts licensed under the SIL Open Font License.")]) }
+    func fail(_ message: String) { if smokeTest { fputs(message + "\n", stderr); service?.terminate(); exit(1) }; let alert = NSAlert(); alert.messageText = "Fibbernet"; alert.informativeText = message; alert.runModal() }
+    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Fibbernet", .applicationVersion: "1.2.0", .credits: NSAttributedString(string: "Broadband monitoring, on record.\nInter and JetBrains Mono fonts licensed under the SIL Open Font License.")]) }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
     func applicationWillTerminate(_ notification: Notification) { terminating = true; stateTimer?.invalidate(); session.invalidateAndCancel(); if service?.isRunning == true { service?.terminate() } }
 }
 
-let app = NSApplication.shared
-let delegate = AppDelegate()
-app.delegate = delegate
-app.setActivationPolicy(.regular)
-app.run()
+@main
+struct FibbernetApp {
+    static func main() {
+        let app = NSApplication.shared
+        let delegate = AppDelegate()
+        app.delegate = delegate
+        app.setActivationPolicy(.regular)
+        withExtendedLifetime(delegate) { app.run() }
+    }
+}

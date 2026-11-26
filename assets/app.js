@@ -5,7 +5,7 @@ let current, initialTemplates, loaded = false, toastTimer, pendingTest = false;
 function field(f, name) { return f.elements.namedItem(name); }
 function toast(message, error = false) { const el = $('#toast'); el.textContent = message; el.classList.toggle('error', error); el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, error ? 12000 : 6000); }
 async function api(path, data) {
-  const options = data === undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json','X-Linewatch':'1'}, body:JSON.stringify(data)};
+  const options = data === undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json','X-Fibbernet':'1'}, body:JSON.stringify(data)};
   const response = await fetch('/api/' + path, options);
   const result = await response.json();
   if (!response.ok) throw Error(result.error || 'The operation failed');
