@@ -78,7 +78,7 @@ class AppTests(unittest.TestCase):
             opener=build_opener(HTTPCookieProcessor(http.cookiejar.CookieJar()))
             self.assertEqual(opener.open(base+'/?token='+server.token).status,200)
             with patch.object(engine,'schedule_enabled',return_value=False):
-                self.assertEqual(json.load(opener.open(base+'/api/state'))['version'],'1.0.0')
+                self.assertEqual(json.load(opener.open(base+'/api/state'))['version'],'1.0.1')
             bad=Request(base+'/api/settings',data=b'{}',headers={'X-Linewatch':'1','Origin':'https://attacker.example'})
             with self.assertRaises(HTTPError) as exc:opener.open(bad)
             self.assertEqual(exc.exception.code,403)

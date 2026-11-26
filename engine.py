@@ -72,7 +72,7 @@ def state():
             'sample_count': sum(r['status'] == 'ok' for r in recent),
             'draft': mail_templates.draft(c, recent), 'busy': running(),
             'schedule_enabled': schedule_enabled(), 'last_email_utc': last_sent[0] if last_sent else None,
-            'data_directory': str(m.ROOT), 'version': '1.0.0'}
+            'data_directory': str(m.ROOT), 'version': '1.0.1'}
 
 
 def save_settings(payload):
@@ -140,7 +140,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path.path == '/api/state':
                 return self.reply(200, state())
-            allowed = {'/': ASSETS / 'index.html', '/app.js': ASSETS / 'app.js', '/style.css': ASSETS / 'style.css'}
+            allowed = {'/': ASSETS / 'index.html', '/app.js': ASSETS / 'app.js', '/style.css': ASSETS / 'style.css', '/app-icon.png': ASSETS / 'app-icon.png'}
             if path.path.startswith('/fonts/') and Path(path.path).name in ('Inter.ttf', 'JetBrainsMono.ttf'):
                 allowed[path.path] = ASSETS / 'fonts' / Path(path.path).name
             file = allowed.get(path.path)

@@ -101,7 +101,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
     }
 
     func fail(_ message: String) { if smokeTest { fputs(message + "\n", stderr); service?.terminate(); exit(1) }; let alert = NSAlert(); alert.messageText = "Linewatch"; alert.informativeText = message; alert.runModal() }
-    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Linewatch", .applicationVersion: "1.0.0", .credits: NSAttributedString(string: "Broadband monitoring, on record.\nInter and JetBrains Mono fonts licensed under the SIL Open Font License.")]) }
+    @objc func about() { NSApp.orderFrontStandardAboutPanel(options: [.applicationName: "Linewatch", .applicationVersion: "1.0.1", .credits: NSAttributedString(string: "Broadband monitoring, on record.\nInter and JetBrains Mono fonts licensed under the SIL Open Font License.")]) }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
     func applicationWillTerminate(_ notification: Notification) { terminating = true; if service?.isRunning == true { service?.terminate() } }
 }

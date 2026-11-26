@@ -31,7 +31,7 @@ for file in distribution.files:
         if candidate.is_file():
             shutil.copyfile(candidate, destination / ('PyInstaller-' + candidate.name))
 PY
-swift macos/Icon.swift build/AppIcon.png
+cp assets/app-icon.png build/AppIcon.png
 mkdir -p build/AppIcon.iconset
 for s in 16 32 128 256 512; do
   sips -z "$s" "$s" build/AppIcon.png --out "build/AppIcon.iconset/icon_${s}x${s}.png" >/dev/null
@@ -42,5 +42,5 @@ iconutil -c icns build/AppIcon.iconset -o "$APP/Contents/Resources/AppIcon.icns"
 codesign --force --deep --sign - "$APP"
 codesign --verify --deep --strict "$APP"
 ARCH="$(uname -m)"
-ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Linewatch-1.0.0-${ARCH}.zip"
-echo "Built $APP and dist/Linewatch-1.0.0-${ARCH}.zip"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "dist/Linewatch-1.0.1-${ARCH}.zip"
+echo "Built $APP and dist/Linewatch-1.0.1-${ARCH}.zip"
