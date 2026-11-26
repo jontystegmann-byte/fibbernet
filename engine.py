@@ -72,7 +72,7 @@ def state():
             'sample_count': sum(r['status'] == 'ok' for r in recent),
             'draft': mail_templates.draft(c, recent), 'busy': running(),
             'schedule_enabled': schedule_enabled(), 'last_email_utc': last_sent[0] if last_sent else None,
-            'data_directory': str(m.ROOT), 'version': '1.0.1'}
+            'data_directory': str(m.ROOT), 'version': '1.1.0'}
 
 
 def save_settings(payload):

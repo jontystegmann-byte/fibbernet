@@ -20,6 +20,14 @@ Requires macOS 14 or later. `x86_64` downloads are for Intel Macs; `arm64` downl
 
 The Mac must be awake and logged in to take measurements, including at 03:00. Closing Linewatch leaves scheduled tests enabled. The app does not wake the Mac or keep it awake. Missed tests may coalesce on waking; gaps do not prove an internet outage.
 
+## Menu bar and background monitoring
+
+Linewatch lives in the Mac menu bar as a four-bar speed icon. Close the dashboard with its red close button to leave the menu bar app running. Click the menu bar icon to reopen the dashboard, check the download average, run a speed test, open the latest report, or pause/resume scheduled tests. The Dock icon hides while the dashboard is closed and returns when you reopen it.
+
+**Start at Login** is an optional menu toggle using macOS Login Items. macOS may require approval in System Settings; **Login Item Settings…** opens that panel. When launched as a login item, Linewatch starts in the menu bar without opening the dashboard. Start at Login is not enabled automatically.
+
+**Quit Linewatch** removes the menu bar icon and closes the local UI service. The independent scheduled tests keep running. Use **Pause Scheduled Tests** if you want monitoring to stop. Both the menu bar and scheduler require this user to be logged in; measurements also require the Mac to be awake. Closing the app does not allow testing during sleep or while the Mac is powered off.
+
 ## Automatic email
 
 Alerts default to **off**. Configure your SMTP server, username, sender, security and port. Store your provider's SMTP app password with **Save password to Keychain**. Use STARTTLS/587 or SSL/465 as specified by your email provider. OAuth-only accounts require a supported SMTP/app-password setup.
