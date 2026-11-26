@@ -30,6 +30,7 @@ m.RUNNER = RUNNER
 
 def initialise():
     m.ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
+    m.ROOT.chmod(0o700)
     if not (m.ROOT / 'config.json').exists():
         shutil.copyfile(DEFAULT, m.ROOT / 'config.json')
     (m.ROOT / 'logs').mkdir(exist_ok=True)

@@ -1,9 +1,12 @@
 """Copy an existing CLI monitor into Linewatch; leave the original as a backup."""
 import fcntl
 import json
+import os
 from pathlib import Path
 import shutil
 import sqlite3
+
+os.umask(0o077)
 
 source = Path.home() / 'internet-monitor'
 target = Path.home() / 'Library/Application Support/Linewatch'
@@ -15,6 +18,7 @@ if (target / 'data/measurements.sqlite3').exists():
 with (source / '.monitor.lock').open('a') as lock:
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     target.mkdir(parents=True, exist_ok=True, mode=0o700)
+    target.chmod(0o700)
     defaults = json.loads(example.read_text())
     old = json.loads((source / 'config.json').read_text())
     defaults.update({k: v for k, v in old.items() if k != 'email'})
