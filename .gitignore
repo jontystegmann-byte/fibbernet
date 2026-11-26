@@ -1,0 +1,14 @@
+data/
+reports/
+logs/
+__pycache__/
+.monitor.lock
+unit-check.txt
+config.json
+.build-venv/
+build/
+dist/
+*.log
+*.spec
+.DS_Store
+qa/

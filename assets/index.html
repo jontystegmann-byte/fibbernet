@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Linewatch — Broadband Monitor</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">lw</span><div><strong>LINE<span>watch</span></strong><p class="eyebrow">BROADBAND MONITOR</p></div></div>
+  <nav aria-label="Main navigation"><button class="nav active" data-view="overview">Overview</button><button class="nav" data-view="settings">Connection & schedule</button><button class="nav" data-view="email">Email & complaints</button></nav>
+  <div class="sidebar-bottom"><span class="eyebrow">YOUR CONNECTION. ON RECORD.</span><p>Measured on this Mac.<br>Stored on this Mac.</p><span class="version">LINEWATCH / V1.0.0</span></div>
+</aside>
+<main>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <section id="overview" class="view">
+    <header><div><p class="eyebrow">THE CONNECTION YOU PAY FOR</p><h1>Keep it on record<span class="accent">.</span></h1><p class="intro">Real measurements. A clear case for better broadband.</p></div><button class="primary" id="test-button">Run speed test</button></header>
+    <div class="status-strip"><span id="schedule-status">Loading schedule…</span><span id="test-status"></span></div>
+    <div class="metric-grid"><article class="metric hero"><span class="eyebrow" id="average-label">24-HOUR DOWNLOAD AVERAGE</span><div><strong id="average">—</strong><span class="unit">Mbps</span></div><p id="average-context">Waiting for measurements</p></article><article class="metric"><span class="eyebrow">YOUR PLAN</span><strong id="plan">—</strong><p>Mbps download</p></article><article class="metric"><span class="eyebrow">PLAN DELIVERED</span><strong id="delivered">—</strong><p>Across successful samples</p></article></div>
+    <article class="panel"><div class="panel-head"><div><p class="eyebrow">DOWNLOAD HISTORY</p><h2>A connection, over time.</h2></div><span class="legend"><i></i>Measured <i class="threshold"></i>Alert threshold</span></div><div id="chart" role="img" aria-label="Download speed history"></div><p class="caption">Sampled speeds in Mbps. Failed tests are listed separately and never counted as zero.</p></article>
+    <article class="panel"><div class="panel-head"><div><p class="eyebrow">SUPPLIER-READY EVIDENCE</p><h2>The details behind the numbers.</h2></div><div class="actions"><button data-action="report">Open printable report</button><button data-action="reveal">Open CSV exports</button></div></div><div class="table-scroll"><table><thead><tr><th>DATE & TIME · LOCAL</th><th>DOWNLOAD</th><th>UPLOAD</th><th>LATENCY</th><th>INTERFACE</th><th>RESULT</th></tr></thead><tbody id="measurements"></tbody></table></div></article>
+    <p class="footnote">For stronger supplier evidence, connect by Ethernet and record connection conditions. This Mac must be awake and logged in for scheduled tests, including 03:00. Tests use available bandwidth and may transfer gigabytes.</p>
+  </section>
+  <section id="settings" class="view" hidden>
+    <header><div><p class="eyebrow">MAKE IT YOURS</p><h1>Your connection<span class="accent">.</span></h1><p class="intro">Set the speed you pay for, and when to check it.</p></div><button class="primary save">Save settings</button></header>
+    <form id="connection-form"><article class="panel"><div class="panel-head"><div><p class="eyebrow">SERVICE DETAILS</p><h2>What should you be getting?</h2></div></div><div class="form-grid">
+      <label>Provider<input name="provider" placeholder="e.g. Your broadband provider"></label><label>Account reference<input name="account_reference" placeholder="Optional account number"></label>
+      <label>Plan download speed · Mbps<input name="plan_mbps" type="number" min="1" required></label><label>Alert below · Mbps<input name="threshold_mbps" type="number" min="1" required></label>
+      <label>Average over · hours<input name="average_hours" type="number" min="1" required></label><label>Minimum successful tests<input name="minimum_samples" type="number" min="1" step="1" required></label>
+      <label>Report window · days<input name="report_days" type="number" min="1" step="1" required></label><label>Network interface<input name="interface" placeholder="Automatic (or e.g. en0)"></label>
+      <label class="full">Connection conditions<textarea name="connection_notes" rows="3" placeholder="Ethernet or Wi-Fi, VPN use, other traffic…"></textarea><small>Saved with each test so historical evidence keeps its original context.</small></label>
+    </div></article>
+    <article class="panel"><div class="panel-head"><div><p class="eyebrow">TEST SCHEDULE · MAC LOCAL TIME</p><h2>Choose your check-ins.</h2></div></div><div id="hours" class="hours" aria-label="Daily test hours"></div><div class="schedule-controls"><p>Every selected hour, at :00. The monitor continues when the app window is closed.</p><button id="schedule-toggle" type="button">Enable schedule</button></div><p class="caption">Sleeping, powered-off or logged-out Macs cannot take tests. A missed test may run after waking within the configured testing window.</p></article></form>
+  </section>
+  <section id="email" class="view" hidden>
+    <header><div><p class="eyebrow">TURN THE NUMBERS INTO ACTION</p><h1>Make your case<span class="accent">.</span></h1><p class="intro">An evidence-led complaint, in your own words.</p></div><button class="primary save">Save settings</button></header>
+    <form id="email-form"><article class="panel"><div class="panel-head"><div><p class="eyebrow">PEOPLE & ADDRESSES</p><h2>Who’s getting the message?</h2></div></div><div class="form-grid">
+      <label>Your name<input name="customer_name" autocomplete="name"></label><label>Your email<input name="user_email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label>Sender email<input name="sender" type="email" placeholder="The address your SMTP account can send from"></label><label>Provider support email<input name="provider_email" type="email" placeholder="support@your-provider.com"></label>
+    </div></article>
+    <article class="panel"><div class="panel-head"><div><p class="eyebrow">EDITABLE COMPLAINT TEMPLATE</p><h2>Firm. Factual. Yours.</h2></div><button id="reset-template" type="button">Restore template</button></div>
+      <label>Subject<input name="subject" required></label><div class="template-grid"><label>Your template<textarea name="body" rows="20" spellcheck="true" required></textarea></label><div><span class="field-label">Live preview</span><div class="letter-preview"><p class="eyebrow">CORRESPONDENCE / DRAFT</p><h3 id="preview-subject"></h3><pre id="preview-body"></pre></div></div></div>
+      <details><summary>Available template fields</summary><p class="tokens">{provider} · {account_reference} · {customer_name} · {user_email} · {plan_mbps} · {threshold_mbps} · {average_mbps} · {window_hours} · {sample_count} · {below_count} · {connection_notes}</p></details>
+      <div class="draft-footer"><p>No message is sent when you open a draft. Attach the CSV or PDF report in your email app if needed.</p><button id="compose" type="button" class="primary">Open draft in email app</button></div>
+    </article>
+    <article class="panel"><div class="panel-head"><div><p class="eyebrow">AUTOMATIC EMAIL</p><h2>A nudge when speeds fall.</h2></div><label class="toggle"><input name="enabled" type="checkbox"> Enable automatic email</label></div><p class="caption">Emails trigger only when the rolling average is below your threshold with enough successful tests. Configure the sender below before enabling.</p><div class="form-grid">
+      <label>Automatic recipient<select name="target"><option value="user">My email</option><option value="provider">Provider support email</option></select></label>
+      <label>Email content<select name="content"><option value="summary">Speed alert with measurement summary</option><option value="complaint">My complaint template</option></select></label>
+      <label>SMTP server<input name="host" placeholder="smtp.example.com" autocomplete="off"></label><label>SMTP username<input name="username" autocomplete="username"></label>
+      <label>Security<select name="security"><option value="starttls">STARTTLS</option><option value="ssl">SSL / TLS</option></select></label><label>Port<input name="port" type="number" min="1" max="65535"></label>
+      <label>Minimum time between emails · hours<input name="cooldown_hours" type="number" min="1"></label><div></div>
+      <label>SMTP app password<input name="password" type="password" autocomplete="new-password" placeholder="Stored securely in macOS Keychain"></label><div class="password-action"><button id="save-password" type="button">Save password to Keychain</button></div>
+    </div><p class="caption">Use an app password where your provider requires one. OAuth-only email accounts need a supported SMTP/app-password configuration. Passwords are never saved in the settings file.</p><p id="last-email" class="caption"></p></article></form>
+  </section>
+</main></body></html>

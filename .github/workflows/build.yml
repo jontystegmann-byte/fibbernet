@@ -1,0 +1,57 @@
+name: Test and package Linewatch
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  macos:
+    strategy:
+      matrix:
+        runner: [macos-15-intel, macos-15]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Test monitor, templates, settings and local API
+        run: |
+          python -m unittest -v
+          node --check assets/app.js
+      - name: Install build tooling
+        run: |
+          python -m venv .build-venv
+          .build-venv/bin/python -m pip install -r requirements-build.txt
+      - name: Build Mac app
+        run: bash scripts/build-macos.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Linewatch-${{ runner.arch }}
+          path: dist/*.zip
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: macos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: Linewatch-*
+          merge-multiple: true
+          path: packages
+      - name: Attach native apps to draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$RELEASE_TAG" >/dev/null 2>&1 || gh release create "$RELEASE_TAG" --draft --title "Linewatch $RELEASE_TAG" --notes "Native Intel and Apple Silicon Mac apps. macOS 14 or later."
+          gh release upload "$RELEASE_TAG" packages/*.zip --clobber

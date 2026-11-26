@@ -1,0 +1,40 @@
+{
+  "plan_mbps": 1000,
+  "threshold_mbps": 700,
+  "hours": [
+    3,
+    8,
+    11,
+    14,
+    17,
+    20
+  ],
+  "average_hours": 24,
+  "minimum_samples": 3,
+  "report_days": 30,
+  "interface": "",
+  "connection_notes": "Default network interface; Wi-Fi/Ethernet and VPN status not yet confirmed.",
+  "email": {
+    "enabled": false,
+    "host": "",
+    "port": 587,
+    "security": "starttls",
+    "username": "",
+    "from": "",
+    "to": [],
+    "keychain_service": "internet-monitor-smtp",
+    "cooldown_hours": 24,
+    "use_complaint_template": false
+  },
+  "profile": {
+    "provider": "",
+    "provider_email": "",
+    "customer_name": "",
+    "account_reference": "",
+    "user_email": ""
+  },
+  "templates": {
+    "subject": "Slow broadband service \u2014 {provider} \u2014 account {account_reference}",
+    "body": "Dear {provider} support team,\n\nI am writing to report consistently slow download speeds on my broadband service.\n\nAccount reference: {account_reference}\nAdvertised download speed: {plan_mbps} Mbps\nMeasured average: {average_mbps} Mbps\nMonitoring period: {window_hours} hours\nSuccessful tests: {sample_count}\nTests below {threshold_mbps} Mbps: {below_count}\n\nThe measurements were taken automatically on my Mac using Apple's networkQuality tool. Connection conditions: {connection_notes}\n\nPlease investigate the reduced speeds, confirm the minimum guaranteed download speed for my service, and provide a fault reference and an expected resolution date. Please also advise whether any service credit is available under my agreement.\n\nI can provide the timestamped measurement report and raw results to support this request.\n\nKind regards,\n{customer_name}\n{user_email}"
+  }
+}
