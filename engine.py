@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 import mimetypes
 import os
+import plistlib
 from pathlib import Path
 import secrets
 import shutil
@@ -57,7 +58,13 @@ def running():
 
 def schedule_enabled():
     result = subprocess.run(['/bin/launchctl', 'print', f'gui/{os.getuid()}/{m.LABEL}'], capture_output=True, timeout=10)
-    return result.returncode == 0
+    if result.returncode != 0:
+        return False
+    try:
+        payload = plistlib.loads((Path.home() / 'Library/LaunchAgents' / (m.LABEL + '.plist')).read_bytes())
+        return Path(payload.get('WorkingDirectory', '')).resolve() == m.ROOT.resolve()
+    except (OSError, ValueError, plistlib.InvalidFileException):
+        return False
 
 
 def state():

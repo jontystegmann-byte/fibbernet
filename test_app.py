@@ -66,6 +66,17 @@ class AppTests(unittest.TestCase):
         payload=plistlib.loads((m.ROOT/'Library/LaunchAgents/local.internet-monitor.plist').read_bytes())
         self.assertEqual(payload['ProgramArguments'],engine.RUNNER+['run','--scheduled'])
 
+    def test_another_profile_schedule_is_not_treated_as_ours(self):
+        import plistlib
+        path = m.ROOT / 'Library/LaunchAgents/local.internet-monitor.plist'
+        path.parent.mkdir(parents=True)
+        path.write_bytes(plistlib.dumps({'WorkingDirectory': str(m.ROOT / 'another-profile')}))
+        with patch.object(engine.Path, 'home', return_value=m.ROOT), patch.object(engine.subprocess, 'run') as run:
+            run.return_value.returncode = 0
+            self.assertFalse(engine.schedule_enabled())
+            path.write_bytes(plistlib.dumps({'WorkingDirectory': str(m.ROOT)}))
+            self.assertTrue(engine.schedule_enabled())
+
     def test_session_and_cross_site_protection(self):
         server=engine.HTTPServer(('127.0.0.1',0),engine.Handler)
         server.host=f'127.0.0.1:{server.server_port}'
